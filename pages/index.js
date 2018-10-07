@@ -34,7 +34,7 @@ class Index extends React.Component {
 
     static async getInitialProps(context) {
 
-        let result = await fetch('http://localhost:3000/api/images');
+        let result = await fetch('http://104.251.214.151:3000/api/images');
         let images = await result.json();
 
         return {images};
