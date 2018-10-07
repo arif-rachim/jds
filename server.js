@@ -7,6 +7,7 @@ const cookieSession = require('cookie-session');
 
 const dev = process.env.NODE_ENV !== 'production';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+process.env.SERVER_PORT = 80;
 
 const app = next({dev});
 const handle = app.getRequestHandler();
@@ -70,8 +71,8 @@ app.prepare().then(() => {
         return handle(req, res)
     });
 
-    server.listen(3000, (err) => {
+    server.listen(process.env.SERVER_PORT, (err) => {
         if (err) throw err;
-        console.log('> Read on http://localhost:3000')
+        console.log(`> Read on http://localhost:${process.env.SERVER_PORT}`)
     })
 });
