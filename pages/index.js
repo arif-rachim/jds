@@ -33,8 +33,9 @@ class Index extends React.Component {
     }
 
     static async getInitialProps(context) {
-
-        let result = await fetch('http://104.251.214.151:3000/api/images');
+        let {req} = context;
+        const refer = req.headers.host;
+        let result = await fetch(`http://${refer}/api/images`);
         let images = await result.json();
 
         return {images};
@@ -54,7 +55,7 @@ class Index extends React.Component {
                 <div style={{display: 'flex', flexDirection: 'column'}}>
                     {printFile(this.state.filesToUpload)}
                     {this.props.images.map(file => {
-                        return <img src={`/static/image/storage/${file}`} style={{width: '300px', margin: '5px'}}/>
+                        return <img src={`/static/image/storage/${file}`} style={{width: '300px', margin: '5px'}} key={file}/>
                     })}
                 </div>
             </div>

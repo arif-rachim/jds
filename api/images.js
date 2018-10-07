@@ -8,7 +8,7 @@ module.exports = (req, res) => {
             return;
         }
         const result = [];
-        files.forEach(file => {
+        files.filter(file => file.indexOf('jpeg') >= 0).forEach(file => {
             result.push(file);
         });
         res.send(result);

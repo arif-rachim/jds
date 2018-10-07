@@ -54,7 +54,6 @@ app.prepare().then(() => {
     server.use(bodyParser.json());
 
     server.all('/api/:service', (req, res) => {
-        debugger;
         if (req.params.service) {
             const moduleName = `./api/${req.params.service.split('.').join('/')}`;
             const module = require(moduleName);
