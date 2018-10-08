@@ -7,8 +7,7 @@ const cookieSession = require('cookie-session');
 
 const dev = process.env.NODE_ENV !== 'production';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-process.env.SERVER_PORT = 80;
-
+process.env.SERVER_PORT = 3000;
 const app = next({dev});
 const handle = app.getRequestHandler();
 
