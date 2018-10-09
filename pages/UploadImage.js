@@ -19,6 +19,10 @@ class UploadImage extends React.Component {
         this.state.filesToUpload = [];
     }
 
+    static defaultProps = {
+        images : []
+    }
+
     onFileChange(event) {
         const files = Array.from(event.target.files);
         files.forEach(file => file.id = guid());

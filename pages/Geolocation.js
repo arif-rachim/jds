@@ -30,8 +30,8 @@ class Geolocation extends React.Component {
             lat: position.coords.latitude,
             lon: position.coords.longitude
         };
-
-        const imgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${latlon.lat},${latlon.lon}&markers=color:red%7Clabel:S%7C${latlon.lat},${latlon.lon}&zoom=15&size=400x300&sensor=false&key=AIzaSyC7BWmlj8vccvQTISypp0t49LxutfLglA4`;
+        const FAKE_KEY = 'AIzaSyC7BWmlj8vccvQTISypp0t49LxutfLglA4B4uT41';
+        const imgUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${latlon.lat},${latlon.lon}&markers=color:red%7Clabel:S%7C${latlon.lat},${latlon.lon}&zoom=15&size=400x300&sensor=false&key=${FAKE_KEY}`;
 
         this.setState({
             latlon,

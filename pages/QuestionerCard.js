@@ -89,6 +89,14 @@ class QuestionerCard extends React.Component {
         });
     }
 
+    async onQuestionSelected(event) {
+        const id = event.target.getAttribute('data-id');
+        const question = await this.getQuestionFromId(id);
+        this.setState({
+            selectedQuestion: question
+        });
+    }
+
     async getCategoryFromId(id) {
         return new Promise(resolve => {
             const category = catalog.filter(category => category._id === id)[0];
@@ -96,17 +104,67 @@ class QuestionerCard extends React.Component {
         });
     }
 
-    backToCategory(){
-        this.setState({
-            selectedCategory : null
+    async getQuestionFromId(id) {
+        return new Promise(resolve => {
+            const question = this.state.selectedCategory.questions.filter(question => question._id === id)[0];
+            resolve(question);
         });
+    }
+
+    backToQuestionSelection() {
+        this.setState({
+            selectedQuestion: null
+        });
+    }
+
+    backToCategorySelection() {
+        this.setState({
+            selectedCategory: null
+        });
+    }
+
+    printTypeOfAnswer(typeOfQuestion) {
+        switch (typeOfQuestion) {
+            case 'boolean' :
+                return (
+                    <div>
+                        <button>Yes</button>
+                        <button>No</button>
+                    </div>
+                )
+            case 'text' :
+                return (
+                    <div><textarea name="text" id="" cols="30" rows="10"></textarea>
+                        <button>Save</button>
+                    </div>
+                )
+        }
+    }
+
+    printSelectedQuestion() {
+        const selectedQuestion = this.state.selectedQuestion;
+        return <div className={'container'}>
+            <div>
+                <button onClick={this.backToQuestionSelection.bind(this)}>Back</button>
+            </div>
+            <span>{selectedQuestion.question}</span>
+            <img src={selectedQuestion.image} alt={'image of selected question'}></img>
+            {this.printTypeOfAnswer(selectedQuestion.type)}
+            <style jsx>{`
+            .container{
+                display: flex;
+                flex-direction : column;
+            }
+            `}</style>
+        </div>
     }
 
     printSelectedCategory() {
         return <div>
-            <button onClick={this.backToCategory.bind(this)}>Back</button>
+            <button onClick={this.backToCategorySelection.bind(this)}>Back</button>
             {this.state.selectedCategory.questions.map(question => {
-                return (<div key={question._id} className={'categoryItem'}>
+                return (<div key={question._id} className={'categoryItem'} onClick={this.onQuestionSelected.bind(this)}
+                             data-id={question._id}>
                     {question.question}
                 </div>)
             })}
@@ -120,7 +178,7 @@ class QuestionerCard extends React.Component {
     }
 
     printCategories() {
-        return <div>
+        return <div className={'categoryContainer'}>
             {catalog.map(category => {
                 return (
                     <div key={category.category} className={'categoryItem'}
@@ -131,20 +189,28 @@ class QuestionerCard extends React.Component {
             <style jsx>{`
                 .categoryItem {
                     padding : 10px;
-                    border : 1px solid grey
+                    border : 1px solid grey;
+                    width : 33%;
+                }
+                .categoryContainer{
+                    display : flex;
                 }
                 `}</style>
         </div>
     }
 
     render() {
+        let displayView = this.state.selectedQuestion ? 'question' : this.state.selectedCategory ? 'category' : 'categories'
         return (
             <div>
                 <div>
-                    {this.state.selectedCategory ? this.printSelectedCategory() : ''}
+                    {displayView == 'question' ? this.printSelectedQuestion() : ''}
                 </div>
                 <div>
-                    {this.state.selectedCategory ? '' : this.printCategories()}
+                    {displayView == 'category' ? this.printSelectedCategory() : ''}
+                </div>
+                <div>
+                    {displayView == 'categories' ? this.printCategories() : ''}
                 </div>
             </div>)
     }
