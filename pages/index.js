@@ -12,7 +12,8 @@ class Index extends React.Component {
     }
 
     static async getInitialProps(context) {
-        return {}
+        let questionCardInitialProps = await QuestionerCard.getInitialProps(context);
+        return {questionCardInitialProps}
     }
 
     onLocationFound(store) {
@@ -30,20 +31,20 @@ class Index extends React.Component {
 
     printStore(store){
         return (
-            <div key={store._id} >
+            <div style={{textAlign:'center',marginTop:'1em'}}>
                 <a href="#" className="btn btn-primary" onClick={()=> this.onStoreSelected(store)}>Enter Survey {store.store}</a>
             </div>);
     }
     render() {
         const displayEnterSelection = this.state.locationReady && !this.state.displaySurvey;
         const displayQuestionCard = this.state.displaySurvey;
-        return <div className={'container'}>
+        return <div className={'container card'} style={{paddingBottom:'1em',paddingTop:'1em'}}>
             <div>
                 <Geolocation locationFound={this.onLocationFound.bind(this)}></Geolocation>
             </div>
-            <div style={{marginTop:'20px'}}>
+            <div >
                 {displayEnterSelection ? (this.printStore(this.state.store)) : ''}
-                {displayQuestionCard ? (<QuestionerCard store={this.state.store}/>) : ''}
+                {displayQuestionCard ? (<QuestionerCard store={this.state.store} {...this.props.questionCardInitialProps}/>) : ''}
             </div>
         </div>
     }

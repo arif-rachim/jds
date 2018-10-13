@@ -1,4 +1,5 @@
-const MongoClient = require('mongodb').MongoClient;
+const mongodb = require('mongodb');
+const MongoClient = mongodb.MongoClient;
 
 const url = 'mongodb://localhost:27017';
 const dbName = 'jds';
@@ -50,7 +51,7 @@ class Database {
     async delete(collection, item) {
         // Remove a single document
         let col = await this.collection(collection);
-        const r = await col.deleteOne(item);
+        const r = await col.deleteOne({_id:mongodb.ObjectId(item._id)});
         return r;
     }
 

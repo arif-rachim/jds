@@ -56,7 +56,7 @@ class StoreForm extends React.Component {
                 'content-type': 'application/json'
             },
             method: 'POST',
-            body: JSON.stringify({store: store.store})
+            body: JSON.stringify(store)
         });
         let result = await response.json();
         this.updateStores();
@@ -81,8 +81,9 @@ class StoreForm extends React.Component {
     render() {
         return (
             <div className={'container'}>
-                <h1>Store Form</h1>
-                <form action="" onSubmit={this.onSaveStore.bind(this)}>
+
+                <form action="" onSubmit={this.onSaveStore.bind(this)} className={'container card'}>
+                    <h3 className={'display-4'}>Store Form</h3>
                     <div className={'form-group'}>
                         <label htmlFor={'store'}>Store Name</label>
                         <input type="text" name={'store'} required className={'form-control'}/>

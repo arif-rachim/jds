@@ -1,79 +1,6 @@
 import React from 'react';
+import fetch from "isomorphic-fetch";
 
-const catalog = [
-    {
-        category: 'Flour',
-        _id: '1',
-        questions: [
-            {
-                _id: '2',
-                question: 'Does the this store has Flour Big?',
-                image: 'image-one.jpg',
-                type: 'boolean'
-            },
-            {
-                _id: '3',
-                question: 'Tell me about the flour size Flour Medium ?',
-                image: 'image-two.jpg',
-                type: 'text'
-            },
-            {
-                _id: '4',
-                question: 'Does the this store has Flour Small ?',
-                image: 'image-three.jpg',
-                type: 'boolean'
-            }
-        ]
-    },
-    {
-        category: 'Eggs',
-        _id: '5',
-        questions: [
-            {
-                _id: '6',
-                question: 'Does the this store has Eggs Big?',
-                image: 'image-one.jpg',
-                type: 'boolean'
-            },
-            {
-                _id: '7',
-                question: 'Tell me about the flour size Eggs Medium ?',
-                image: 'image-two.jpg',
-                type: 'text'
-            },
-            {
-                _id: '8',
-                question: 'Does the this store has Eggs Small ?',
-                image: 'image-three.jpg',
-                type: 'boolean'
-            }
-        ]
-    },
-    {
-        category: 'Oats',
-        _id: '9',
-        questions: [
-            {
-                _id: '10',
-                question: 'Does the this store has Oats Big?',
-                image: 'image-one.jpg',
-                type: 'boolean'
-            },
-            {
-                _id: '11',
-                question: 'Tell me about the flour size Oats Medium ?',
-                image: 'image-two.jpg',
-                type: 'text'
-            },
-            {
-                _id: '11',
-                question: 'Does the this store has Oats Small ?',
-                image: 'image-three.jpg',
-                type: 'boolean'
-            }
-        ]
-    }
-];
 
 class QuestionerCard extends React.Component {
 
@@ -81,19 +8,56 @@ class QuestionerCard extends React.Component {
         super(props);
         this.state = {};
         this.state.store = props.store;
+        this.state.categories = props.categories;
+        const categories = this.state.categories;
+        if(props.questions){
+            this.state.allQuestions = props.questions.filter(q => q.stores.indexOf(props.store._id) >= 0);
+            const _categories = this.state.allQuestions.reduce((res,next) => {
+                const questionCategory = categories.filter(cat => cat._id === next.category)[0];
+                res[next.category] = res[next.category] || { category : questionCategory, questions :[]};
+                res[next.category].questions.push(next);
+                return res;
+            },{});
+            const cleanCategories = [];
+            for (const [key, value] of Object.entries(_categories)) {
+                cleanCategories.push({
+                    category : value.category.category,
+                    _id : value.category._id,
+                    questions : value.questions
+                })
+            }
+            this.state.catalog = cleanCategories;
+        }
+
     }
 
-    async onCategorySelected(event) {
-        const id = event.target.getAttribute('data-id');
-        const category = await this.getCategoryFromId(id);
+    static async getInitialProps(context){
+        let response = await fetch(`http://localhost:3000/api/database?c=Question&a=read`, {
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({})
+        });
+        let questions = await response.json();
+        response = await fetch(`http://localhost:3000/api/database?c=Category&a=read`, {
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({})
+        });
+        let categories = await response.json();
+        return {questions,categories}
+    }
+
+    async onCategorySelected(category) {
         this.setState({
             selectedCategory: category
         });
     }
 
-    async onQuestionSelected(event) {
-        const id = event.target.getAttribute('data-id');
-        const question = await this.getQuestionFromId(id);
+    async onQuestionSelected(question) {
         this.setState({
             selectedQuestion: question
         });
@@ -124,14 +88,21 @@ class QuestionerCard extends React.Component {
             selectedCategory: null
         });
     }
+    onYesClicked(){
+        {/*We need to continue here*/}
+    }
+    onNoClicked(){
+
+    }
 
     printTypeOfAnswer(typeOfQuestion) {
+        debugger;
         switch (typeOfQuestion) {
             case 'boolean' :
                 return (
                     <div>
-                        <button>Yes</button>
-                        <button>No</button>
+                        <button className={'btn btn-success'} style={{marginRight:'0.5em'}} onClick={this.onYesClicked.bind(this)}>Yes</button>
+                        <button className={'btn btn-danger'} onClick={this.onNoClicked.bind(this)}>No</button>
                     </div>
                 )
             case 'text' :
@@ -145,59 +116,47 @@ class QuestionerCard extends React.Component {
 
     printSelectedQuestion() {
         const selectedQuestion = this.state.selectedQuestion;
-        return <div className={'container'}>
-            <div>
-                <button onClick={this.backToQuestionSelection.bind(this)}>Back</button>
-            </div>
-            <span>{selectedQuestion.question}</span>
-            <img src={selectedQuestion.image} alt={'image of selected question'}></img>
+        return <div>
+            <button onClick={this.backToQuestionSelection.bind(this)} className={'btn btn-primary'}
+                    style={{margin: '1em'}}>Back
+            </button>
+            <div style={{margin: '1em'}}>
+            <h3 className={'display-4'} >{selectedQuestion.question}</h3>
             {this.printTypeOfAnswer(selectedQuestion.type)}
-            <style jsx>{`
-            .container{
-                display: flex;
-                flex-direction : column;
-            }
-            `}</style>
+            </div>
+
         </div>
     }
 
     printSelectedCategory() {
         return <div>
-            <button onClick={this.backToCategorySelection.bind(this)}>Back</button>
+            <button onClick={this.backToCategorySelection.bind(this)} className={'btn btn-primary'}
+                    style={{margin: '1em'}}>Back
+            </button>
             {this.state.selectedCategory.questions.map(question => {
-                return (<div key={question._id} className={'categoryItem'} onClick={this.onQuestionSelected.bind(this)}
-                             data-id={question._id}>
-                    {question.question}
+                return (<div key={question._id} className={'card'} onClick={() => this.onQuestionSelected(question)}
+                             style={{margin: '1em'}}>
+                    <div className={'card-body'}>
+                        <p>{question.question}</p>
+                    </div>
                 </div>)
             })}
-            <style jsx>{`
-                .categoryItem {
-                    padding : 10px;
-                    border : 1px solid grey
-                }
-            `}</style>
         </div>
     }
 
     printCategories() {
-        return <div className={'categoryContainer'}>
-            {catalog.map(category => {
+        return <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'}}>
+            {this.state.catalog.map(category => {
                 return (
-                    <div key={category.category} className={'categoryItem'}
-                         onClick={this.onCategorySelected.bind(this)}
-                         data-id={category._id}>{category.category}</div>
+                    <div key={category.category} onClick={() => this.onCategorySelected(category)}>
+                        <div className={'col-sm '} style={{margin: '1em'}}>
+                            <button className={'btn btn-primary'}><h1 className={'display-3'}>{category.category}</h1>
+                            </button>
+                        </div>
+                    </div>
                 );
             })}
-            <style jsx>{`
-                .categoryItem {
-                    padding : 10px;
-                    border : 1px solid grey;
-                    width : 33%;
-                }
-                .categoryContainer{
-                    display : flex;
-                }
-                `}</style>
+
         </div>
     }
 

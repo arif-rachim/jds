@@ -54,7 +54,7 @@ class CategoryForm extends React.Component {
                 'content-type': 'application/json'
             },
             method: 'POST',
-            body: JSON.stringify({category: category.category})
+            body: JSON.stringify(category)
         });
         let result = await response.json();
         this.updateCategories();
@@ -77,8 +77,9 @@ class CategoryForm extends React.Component {
     render() {
         return (
             <div className={'container'}>
-                <h1>Category Form</h1>
-                <form action="" onSubmit={this.onSaveCategory.bind(this)}>
+
+                <form action="" onSubmit={this.onSaveCategory.bind(this)} className={'card container'}>
+                    <h3 className={'display-4'}>Category Form</h3>
                     <div className={'form-group'}>
                         <label htmlFor="category">Category Name</label>
                         <input type="text" name={'category'} required className={'form-control'}/>
