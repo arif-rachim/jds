@@ -6,12 +6,16 @@ class PreviewImage extends React.Component {
         super(props);
         this.state = {};
         this.state.file = props.file;
+        this.state.fileName = props.fileName;
         this.state.progress = props.progress || 0;
         const reader = new FileReader();
         reader.onload = this.onLoad.bind(this);
         reader.readAsDataURL(this.state.file);
     }
 
+    static defaultProps = {
+        onUploadComplete : () => {}
+    };
 
     onLoad(e) {
         this.setState({
@@ -41,13 +45,15 @@ class PreviewImage extends React.Component {
 
     set progress(val) {
         this.setState({progress: val});
+        if(val == 1){
+            this.props.onUploadComplete.call(null,this.state.fileName);
+        }
     }
 
     async compressImage() {
         return new Promise(resolve => {
             const image = new Image();
             image.onload = () => {
-                // Resize the image
                 const canvas = document.createElement('canvas');
                 const max_size = 544;
                 let width = image.width;
@@ -79,7 +85,7 @@ class PreviewImage extends React.Component {
         const formData = new FormData();
         const request = new XMLHttpRequest();
         formData.set('photo', compressedImage);
-        request.open('POST', '/upload');
+        request.open('POST', `/upload?file=${this.state.fileName}`);
         const self = this;
         request.addEventListener('progress', event => {
             if (event.lengthComputable) {
@@ -93,7 +99,7 @@ class PreviewImage extends React.Component {
         const printButton = () => {
             return (
             <div style={{position:'absolute',top:'0',left : '0',right:'0',bottom:'0',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                {this.state.progress == 0 ? <button onClick={this.uploadFile.bind(this)}>Upload</button> : ``}
+                {this.state.progress == 0 ? <button onClick={this.uploadFile.bind(this)} className={'btn btn-primary'}>Upload</button> : ``}
             </div>);
         };
         return <div style={{width: '300px',position:'relative'}}>

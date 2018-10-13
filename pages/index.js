@@ -1,37 +1,52 @@
 import React from 'react';
-import QuestionerCard from './QuestionerCard';
-import UploadImage from './UploadImage';
 import Geolocation from './Geolocation';
-import StoreSelection from './StoreSelection';
-class Index extends React.Component{
+import QuestionerCard from "./QuestionerCard";
 
-    constructor(props){
+class Index extends React.Component {
+
+    constructor(props) {
         super(props);
         this.state = {};
+        this.state.locationReady = false;
+        this.state.displaySurvey = false;
     }
 
-    static async getInitialProps(context){
-        let storeSelectionInitProps = await StoreSelection.getInitialProps(context);
-        return {
-            storeSelectionInitProps
-        }
+    static async getInitialProps(context) {
+        return {}
     }
 
-    onStoreSelected(store){
+    onLocationFound(store) {
         this.setState({
-            selectedStore : store
+            locationReady: true,
+            store
         });
     }
 
-    render(){
-        const selectedStore = this.state.selectedStore;
-        const displayGeolocation = true;
-        const displayStoreSelection = selectedStore === null || selectedStore === undefined;
+    onStoreSelected(store){
+       this.setState({
+           displaySurvey : store !== null && store !== undefined
+       });
+    }
 
-        return <div>
-            {displayGeolocation ? (<Geolocation></Geolocation>) : ''}
-            {displayStoreSelection ? (<StoreSelection onStoreSelected={this.onStoreSelected.bind(this)} {...this.props.storeSelectionInitProps}></StoreSelection>) : (<QuestionerCard store={selectedStore}/>)}
+    printStore(store){
+        return (
+            <div key={store._id} >
+                <a href="#" className="btn btn-primary" onClick={()=> this.onStoreSelected(store)}>Enter Survey {store.store}</a>
+            </div>);
+    }
+    render() {
+        const displayEnterSelection = this.state.locationReady && !this.state.displaySurvey;
+        const displayQuestionCard = this.state.displaySurvey;
+        return <div className={'container'}>
+            <div>
+                <Geolocation locationFound={this.onLocationFound.bind(this)}></Geolocation>
+            </div>
+            <div style={{marginTop:'20px'}}>
+                {displayEnterSelection ? (this.printStore(this.state.store)) : ''}
+                {displayQuestionCard ? (<QuestionerCard store={this.state.store}/>) : ''}
+            </div>
         </div>
     }
 }
+
 export default Index;

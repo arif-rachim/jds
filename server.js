@@ -21,9 +21,8 @@ const multerConfig = {
 
         //Then give the file a unique name
         filename: function (req, file, next) {
-            console.log(file);
             const ext = file.mimetype.split('/')[1];
-            next(null, file.fieldname + '-' + Date.now() + '.' + ext);
+            next(null, req.query.file+'.' + ext);
         }
     }),
 
@@ -33,10 +32,8 @@ const multerConfig = {
         }
         const image = file.mimetype.startsWith('image/');
         if (image) {
-            console.log('photo uploaded');
             next(null, true);
         } else {
-            console.log("file not supported");
             return next();
         }
     }

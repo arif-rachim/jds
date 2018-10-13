@@ -76,28 +76,34 @@ class CategoryForm extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className={'container'}>
+                <h1>Category Form</h1>
                 <form action="" onSubmit={this.onSaveCategory.bind(this)}>
-                    <input type="text" name={'category'} required placeholder="Category Name"/>
-                    <input type="submit" value={'Add'}/>
+                    <div className={'form-group'}>
+                        <label htmlFor="category">Category Name</label>
+                        <input type="text" name={'category'} required className={'form-control'}/>
+                    </div>
+                    <div className={'form-group'}>
+                    <input type="submit" value={'Add'} className={'btn btn-primary'}/>
+                    </div>
                 </form>
-                <table>
+                <table  className={'table table-striped'}>
                     <thead>
                     <tr>
-                        <th>No</th>
+                        <th style={{width:'50px'}}>No</th>
                         <th>Category</th>
-                        <td></td>
+                        <th style={{width:'100px'}}></th>
                     </tr>
                     </thead>
                     <tbody>
                     {this.state.categories.map((category, index) => (<tr key={category._id}>
                         <td>{index + 1}</td>
-                        <td>{category.category}</td>
+                        <td style={{fontWeight:'bold'}}>{category.category}</td>
                         <td>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 this.deleteCategory(category)
-                            }}>Delete
+                            }} className={'btn btn-danger'}>Delete
                             </button>
                         </td>
                     </tr>))}

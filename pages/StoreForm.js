@@ -1,8 +1,9 @@
 import React from 'react';
 import fetch from 'isomorphic-fetch';
-
+import ImageField from './ImageField';
 const collectionName = 'Store';
 class StoreForm extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {};
@@ -79,34 +80,45 @@ class StoreForm extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className={'container'}>
+                <h1>Store Form</h1>
                 <form action="" onSubmit={this.onSaveStore.bind(this)}>
-                    <input type="text" name={'store'} required placeholder="Store Name"/>
-                    <input type="text" name={'latlon'} required placeholder="Latitude longitude"/>
-                    <input type="submit" value={'Add'}/>
+                    <div className={'form-group'}>
+                        <label htmlFor={'store'}>Store Name</label>
+                        <input type="text" name={'store'} required className={'form-control'}/>
+                    </div>
+                    <div className={'form-group'}>
+                        <label htmlFor={'store'}>Lattitude Longitude</label>
+                        <input type="text" name={'latlon'} required  className="form-control"/>
+                    </div>
+                    <div className={'form-group'}>
+                        <input type="submit" value={'Add'} className="btn btn-primary"/>
+                    </div>
                 </form>
-                <table>
+
+                <table className={'table table-striped'}>
                     <thead>
                     <tr>
                         <th>No</th>
                         <th>Store</th>
                         <th>Lat Lon</th>
-                        <td></td>
+                        <th style={{width:'50px'}}>Store Image</th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody>
                     {this.state.stores.map((store, index) => (<tr key={store._id}>
                         <td>{index + 1}</td>
-                        <td>{store.store}</td>
+                        <td style={{fontWeight:'bold'}}>{store.store}</td>
                         <td>{store.latlon}</td>
-                        <td>
-
+                        <td style={{width:'50px'}}>
+                            <ImageField src={`${store.store.toLowerCase().split(' ').join('_')}`}></ImageField>
                         </td>
                         <td>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 this.deleteStore(store)
-                            }}>Delete
+                            }} className={'btn btn-danger'}>Delete
                             </button>
                         </td>
                     </tr>))}
