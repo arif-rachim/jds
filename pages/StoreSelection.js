@@ -30,7 +30,7 @@ class StoreSelection extends React.Component {
         this.state = {};
     }
 
-    defaultProps = {
+    static defaultProps = {
         onStoreSelected : () => {}
     };
 
@@ -48,6 +48,8 @@ class StoreSelection extends React.Component {
         });
         const callback = this.props.onStoreSelected || (() => {});
         callback.call(this,store);
+
+
     }
 
     async getStoreById(id) {

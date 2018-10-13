@@ -79,6 +79,7 @@ class QuestionerCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
+        this.state.store = props.store;
     }
 
     async onCategorySelected(event) {
