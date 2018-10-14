@@ -9,7 +9,7 @@ class CategoryForm extends React.Component {
     }
 
     static async getInitialProps() {
-        let response = await fetch(`${SERVER_ADDRESS}api/database?c=Category&a=read`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Category&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -30,7 +30,7 @@ class CategoryForm extends React.Component {
         formData.forEach((value, key) => {
             data[key] = value
         });
-        let response = await fetch(`${SERVER_ADDRESS}api/database?c=Category&a=create`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Category&a=create`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -49,7 +49,7 @@ class CategoryForm extends React.Component {
         if (!userConfirm) {
             return false;
         }
-        let response = await fetch(`${SERVER_ADDRESS}api/database?c=Category&a=delete`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Category&a=delete`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -61,7 +61,7 @@ class CategoryForm extends React.Component {
     }
 
     async updateCategories() {
-        let response = await fetch(`${SERVER_ADDRESS}api/database?c=Category&a=read`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Category&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },
