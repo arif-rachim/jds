@@ -1,7 +1,10 @@
 import React from 'react';
 import fetch from 'isomorphic-fetch';
 import ImageField from './ImageField';
+import {SERVER_ADDRESS} from './Config';
+
 const collectionName = 'Store';
+
 class StoreForm extends React.Component {
 
     constructor(props) {
@@ -11,7 +14,7 @@ class StoreForm extends React.Component {
     }
 
     static async getInitialProps() {
-        let response = await fetch(`http://localhost:3000/api/database?c=${collectionName}&a=read`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=${collectionName}&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -32,7 +35,7 @@ class StoreForm extends React.Component {
         formData.forEach((value, key) => {
             data[key] = value
         });
-        let response = await fetch(`http://localhost:3000/api/database?c=${collectionName}&a=create`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=${collectionName}&a=create`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -51,7 +54,7 @@ class StoreForm extends React.Component {
         if (!userConfirm) {
             return false;
         }
-        let response = await fetch(`http://localhost:3000/api/database?c=${collectionName}&a=delete`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=${collectionName}&a=delete`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -63,7 +66,7 @@ class StoreForm extends React.Component {
     }
 
     async updateStores() {
-        let response = await fetch(`http://localhost:3000/api/database?c=${collectionName}&a=read`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=${collectionName}&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },

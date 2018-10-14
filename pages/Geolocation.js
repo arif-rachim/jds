@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {SERVER_ADDRESS} from './Config';
 class Geolocation extends React.Component {
 
     constructor(props) {
@@ -76,7 +76,7 @@ class Geolocation extends React.Component {
     }
 
     async getNearestStore(latlon) {
-        let response = await fetch(`http://localhost:3000/api/database?c=Store&a=read`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Store&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },

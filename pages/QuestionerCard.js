@@ -2,7 +2,7 @@ import React from 'react';
 import fetch from "isomorphic-fetch";
 import db from './LocalDatabase';
 import PreviewImage from "./PreviewImage";
-
+import {SERVER_ADDRESS} from "./Config";
 
 const guid = () => {
     function s4() {
@@ -44,7 +44,7 @@ class QuestionerCard extends React.Component {
     }
 
     static async getInitialProps(context) {
-        let response = await fetch(`http://localhost:3000/api/database?c=Question&a=read`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Question&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -52,7 +52,7 @@ class QuestionerCard extends React.Component {
             body: JSON.stringify({})
         });
         let questions = await response.json();
-        response = await fetch(`http://localhost:3000/api/database?c=Category&a=read`, {
+        response = await fetch(`${SERVER_ADDRESS}/api/database?c=Category&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },

@@ -1,6 +1,6 @@
 import React from 'react';
 import fetch from "isomorphic-fetch";
-
+import {SERVER_ADDRESS} from "./Config";
 class QuestionerForm extends React.Component {
 
     constructor(props) {
@@ -11,7 +11,7 @@ class QuestionerForm extends React.Component {
     }
 
     static async getInitialProps() {
-        let response = await fetch('http://localhost:3000/api/database?c=Category&a=read', {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Category&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -19,7 +19,7 @@ class QuestionerForm extends React.Component {
             body: JSON.stringify({})
         });
         let categories = await response.json();
-        response = await fetch(`http://localhost:3000/api/database?c=Question&a=read`, {
+        response = await fetch(`${SERVER_ADDRESS}/api/database?c=Question&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -43,7 +43,7 @@ class QuestionerForm extends React.Component {
                 data.imageRequired = true;
             }
         }
-        let response = await fetch(`http://localhost:3000/api/database?c=Question&a=create`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Question&a=create`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -58,7 +58,7 @@ class QuestionerForm extends React.Component {
     }
 
     async updateQuestionList() {
-        let response = await fetch(`http://localhost:3000/api/database?c=Question&a=read`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Question&a=read`, {
             headers: {
                 'content-type': 'application/json'
             },
@@ -78,7 +78,7 @@ class QuestionerForm extends React.Component {
         if (!confirmDelete) {
             return;
         }
-        let response = await fetch(`http://localhost:3000/api/database?c=Question&a=delete`, {
+        let response = await fetch(`${SERVER_ADDRESS}/api/database?c=Question&a=delete`, {
             headers: {
                 'content-type': 'application/json'
             },
