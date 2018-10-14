@@ -2,11 +2,11 @@ import React from 'react';
 import fetch from "isomorphic-fetch";
 
 class QuestionerForm extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {};
         this.state.categories = props.categories;
-        this.state.stores = props.stores;
         this.state.questions = props.questions;
     }
 
@@ -19,14 +19,6 @@ class QuestionerForm extends React.Component {
             body: JSON.stringify({})
         });
         let categories = await response.json();
-        response = await fetch(`http://localhost:3000/api/database?c=Store&a=read`, {
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify({})
-        });
-        let stores = await response.json();
         response = await fetch(`http://localhost:3000/api/database?c=Question&a=read`, {
             headers: {
                 'content-type': 'application/json'
@@ -36,7 +28,7 @@ class QuestionerForm extends React.Component {
         });
         let questions = await response.json();
         return {
-            categories, stores, questions
+            categories, questions
         }
     }
 
@@ -46,12 +38,7 @@ class QuestionerForm extends React.Component {
         const data = {};
         data.imageRequired = false;
         for (let key of formData.keys()) {
-            if (key.indexOf('store') >= 0) {
-                data.stores = data.stores || [];
-                data.stores.push(formData.get(key));
-            } else {
-                data[key] = formData.get(key);
-            }
+            data[key] = formData.get(key);
             if (key === 'imageRequired') {
                 data.imageRequired = true;
             }
@@ -84,15 +71,6 @@ class QuestionerForm extends React.Component {
         });
     }
 
-    printStore(store, index) {
-        return (
-            <div className="form-check form-check-inline" key={store._id}>
-                <input className="form-check-input" type="checkbox" id={store._id} value={store._id}
-                       name={`store_${index}`}></input>
-                <label className="form-check-label" htmlFor={store._id}>{store.store}</label>
-            </div>
-        );
-    }
 
     async deleteQuestion(question) {
         // ok lets delete this question
@@ -118,25 +96,15 @@ class QuestionerForm extends React.Component {
             return categories.length > 0 ? categories[0].category : '';
         };
 
-        const printStores = (storeIds) => {
-            const stores = this.state.stores.filter(st => storeIds.indexOf(st._id)>=0);
-            const map = stores.map(store => <div key={store._id}>{store.store}</div>)
-            return map;
-        };
+
 
         return (
             <tr key={question._id}>
                 <td>{index + 1}</td>
-
                 <td>{printCategory(question.category)}</td>
-
                 <td>{question.question}</td>
                 <td>{question.type}</td>
-
                 <td>{question.imageRequired.toString()}</td>
-
-                <td>{printStores(question.stores)}</td>
-
                 <td>
                     <button className={'btn btn-danger'} onClick={() => this.deleteQuestion(question)}>Delete</button>
                 </td>
@@ -176,10 +144,6 @@ class QuestionerForm extends React.Component {
                     </div>
                 </div>
                 <div className={'form-group'}>
-                    <h4>Store</h4>
-                    {this.state.stores.map(this.printStore)}
-                </div>
-                <div className={'form-group'}>
                     <input type="submit" value={'Save'} className={'btn btn-primary'}/>
                 </div>
             </form>
@@ -192,7 +156,6 @@ class QuestionerForm extends React.Component {
                     <th>Question</th>
                     <th>Type</th>
                     <th>Image Required</th>
-                    <th>Store</th>
                     <th></th>
                 </tr>
                 </thead>

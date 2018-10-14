@@ -66,11 +66,11 @@ class Geolocation extends React.Component {
 
         if (nearestStore && nearestStore.length > 0) {
             const store = nearestStore[0];
-            this.setState({message: `You are in ${store.store}`,storeFound:true});
+            this.setState({store: store,storeFound:true});
             this.props.locationFound.call(null, store);
 
         } else {
-            this.setState({message: 'It seems you are not in the Stores',storeFound:false,stores});
+            this.setState({storeFound:false,stores});
         }
         this.setState({imgUrl});
     }
@@ -123,30 +123,31 @@ class Geolocation extends React.Component {
     printStores(){
         return this.state.stores ? this.state.stores.map(store => <span key={store._id} className="badge badge-primary" style={{margin:'0.1em'}}>{store.store}</span>) : '';
     }
+
     render() {
         const printAskPermissionDialog = () => {
             return (
-                <div>
-                    <h1 className={'display-4'}>Jenan Distribution System</h1> <p>Hi, this application require to access
+                <div style={{padding:'1em'}}>
+                    <h1 className={'display-4'} style={{fontSize:'2.5em',textAlign:'right'}}>Jenan Distribution System</h1>
+                    <p className={'display-4'} style={{fontSize:'2em',marginTop:'1em'}}>Hi, this application require to access
                     your current location, please accept to proceed </p>
-                    <div style={{marginTop: '20px'}}>
+                    <div style={{marginTop: '2em',display:'flex'}} >
                         <button className={'btn btn-primary'} style={{marginRight: '10px'}}
                                 onClick={this.onUserClickOk.bind(this)}>Ok
                         </button>
-                        <button className={'btn btn-danger'}>No</button>
+                        <button className={'btn btn-danger'} onClick={(e) => alert('Sorry we cant proceed next step')}>No</button>
                     </div>
                 </div>);
         };
 
         const printLocation = () => {
             return <div style={{textAlign:'center'}}>
-                {this.state.storeFound ? <h3 className="display-4" style={{fontSize:'2em'}}>{this.state.message}</h3> : <p>It seems you are not in the store, this application will be enabled once you are in the {this.printStores()}</p>}
-                {this.state.imgUrl ? <img src={this.state.imgUrl} alt="Image address" className="img-thumbnail"/> : ''}
+                {this.state.storeFound ? <h3 className="display-4" style={{fontSize:'1.9em',borderBottom:'1px solid rgba(0,0,0,0.1)',padding:'0.5em',margin:'0px',background:'rgba(0,0,0,0.8)',color:'white'}}>You are in <i style={{whiteSpace:'nowrap'}}>{this.state.store.store}</i></h3> : <p className={'display-3'} style={{fontSize:'2.5em',textAlign:'left',padding:'1em'}}><i>Sorry ,</i><br/> you can only proceed once you are in one of the listed Store.</p>}
+                {(this.state.imgUrl && !this.state.storeFound) ? <img src={this.state.imgUrl} alt="Image address" style={{width:'100%'}}/> : ''}
             </div>;
         }
         return <div>
             {this.state.askForPermissionDialog ? printAskPermissionDialog() : printLocation()}
-
         </div>
     }
 }

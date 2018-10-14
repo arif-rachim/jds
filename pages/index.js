@@ -38,11 +38,11 @@ class Index extends React.Component {
     render() {
         const displayEnterSelection = this.state.locationReady && !this.state.displaySurvey;
         const displayQuestionCard = this.state.displaySurvey;
-        return <div className={'container card'} style={{paddingBottom:'1em',paddingTop:'1em'}}>
+        return <div style={{maxWidth : '430px',margin:'auto'}}>
             <div>
                 <Geolocation locationFound={this.onLocationFound.bind(this)}></Geolocation>
             </div>
-            <div >
+            <div>
                 {displayEnterSelection ? (this.printStore(this.state.store)) : ''}
                 {displayQuestionCard ? (<QuestionerCard store={this.state.store} {...this.props.questionCardInitialProps}/>) : ''}
             </div>

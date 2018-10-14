@@ -102,12 +102,12 @@ class PreviewImage extends React.Component {
                 {this.state.progress == 0 ? <button onClick={this.uploadFile.bind(this)} className={'btn btn-primary'}>Upload</button> : ``}
             </div>);
         };
-        return <div style={{width: '300px',position:'relative'}}>
+        return <div style={{width: '100%',position:'relative'}}>
             <img src={this.state.fileSrc} style={{
-                width: '300px',
+                width: '100%',
                 opacity: (0.5 + (this.state.progress)),
                 transition: 'all 1s ease-out',
-                margin: '5px'
+                margin: '0px'
             }}/>
             {printButton()}
         </div>
